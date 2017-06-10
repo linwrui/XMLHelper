@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="xml\XmlMap.cs" />
     <Compile Include="xml\XmlOperator.cs" />
   </ItemGroup>
   <ItemGroup>

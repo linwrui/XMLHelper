@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿//*Author:linwrui
+//*DateTime:2017-06-10
+
+using System;
 using System.Text;
-using System.Threading.Tasks;
 using XMLHelper.xml;
 
 namespace XMLHelper
@@ -12,8 +11,9 @@ namespace XMLHelper
     {
         static void Main(string[] args)
         {
+            CreateXmlFile("D:\\TestExportFile\\TestXml.xml");
             //LoadXmlFile("D:\\TestExportFile\\TestXml.xml");
-            LoadXmlString();
+            //LoadXmlString();
             Console.ReadLine();
         }
 
@@ -46,6 +46,7 @@ namespace XMLHelper
                 var node = xmlOperator.GetXmlNode(x => x.Name == "faultcode");
                 Console.WriteLine(xmlOperator.GetXmlNode(x=>x.Name=="faultstring")?.FirstChild.Value);
                 Console.WriteLine(xmlOperator.GetXmlNode(x=>x.Name=="detail")?.FirstChild.Value);
+                xmlOperator.SaveAs("D:\\TestExportFile\\TestXml.xml",true);
             }
         }
 

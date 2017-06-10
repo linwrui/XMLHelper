@@ -1,4 +1,7 @@
-﻿using System;
+﻿//*Author:linwrui
+//*DateTime:2017-06-10
+
+using System;
 using System.IO;
 using System.Xml;
 
@@ -150,7 +153,7 @@ namespace XMLHelper.xml
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="openFileAfterSaved"></param>
-        public void SaveAs(string filePath)
+        public void SaveAs(string filePath, bool openFileAfterSaved = false)
         {
             _fileInfo = new FileInfo(filePath);
             if (!Directory.Exists(_fileInfo.Directory.FullName))
@@ -158,6 +161,10 @@ namespace XMLHelper.xml
                 Directory.CreateDirectory(_fileInfo.Directory.FullName);
             }
             this.Save();
+            if(openFileAfterSaved)
+            {
+                System.Diagnostics.Process.Start(filePath);
+            }
         }
 
         /// <summary>
