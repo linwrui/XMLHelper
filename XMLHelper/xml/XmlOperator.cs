@@ -61,10 +61,17 @@ namespace XMLHelper.xml
             _root = root;
         }
 
-        public void Load(string xml)
+        public void LoadFromString(string xml)
         {
-            _xmlDoc.Load(xml);
+            _xmlDoc.LoadXml(xml);
             _root = _xmlDoc.DocumentElement;
+        }
+
+        public void LoadFromFile(string filePath)
+        {
+            _xmlDoc.Load(filePath);
+            _root = _xmlDoc.DocumentElement;
+            _fileInfo = new FileInfo(filePath);
         }
 
         /// <summary>
@@ -165,37 +172,11 @@ namespace XMLHelper.xml
             GC.SuppressFinalize(this);//释放资源
         }
 
-        /// <summary>
-        /// 获取name=nodeName的节点的值
-        /// </summary>
-        /// <param name="nodeName"></param>
-        /// <returns></returns>
-        public string GetXmlNodeValue(string nodeName)
+        public XmlNode GetXmlNode(Predicate<XmlNode> match)
         {
-            //获取当前XML文档的根 一级
-            XmlNode oNode = _xmlDoc.DocumentElement;
-            //获取根节点的所有子节点列表
-            XmlNodeList oList = oNode.ChildNodes;
-            XmlNode node = GetXmlChild(oNode, nodeName);
-            return node.Value;
-            //if (node.HasChildNodes) return node.FirstChild.Value;
-            //else return node.Value;
+            return GetNodeByPredicate(_root, match);
         }
 
-        /// <summary>
-        /// 获取指定节点中某一属性的的值
-        /// </summary>
-        /// <param name="nodeName"></param>
-        /// <returns></returns>
-        public string GetNodeAttributeValue(string nodeName,string attributeName)
-        {
-            //获取根节点的所有子节点列表
-            XmlNode node = GetXmlChild(_root, nodeName);
-            if (node == null) return null;
-            return node.Attributes[attributeName].Value;
-            //if (node.HasChildNodes) return node.FirstChild.Value;
-            //else return node.Value;
-        }
 
         /// <summary>
         /// 从指定节点下获取某一个子节点（或节点本身）
@@ -203,22 +184,21 @@ namespace XMLHelper.xml
         /// <param name="node">The node.</param>
         /// <param name="childName">Name of the child.</param>
         /// <returns>XmlNode.</returns>
-        private XmlNode GetXmlChild(XmlNode node, string childName)
+        private XmlNode GetNodeByPredicate(XmlNode node, Predicate<XmlNode> match)
         {
             XmlNode result = node;
-            if (node.Name.ToLower() == childName.ToLower()) return node;
+            if (match.Invoke(node)) return node;
             if (node.HasChildNodes)
             {
                 foreach (XmlNode child in node.ChildNodes)
                 {
-                    result = GetXmlChild(child, childName);//递归
+                    result = GetNodeByPredicate(child, match);//递归
                     if (result != null)
                         return result;
                 }
             }
             return null;
         }
-
 
     }
 }

@@ -12,14 +12,20 @@ namespace XMLHelper
     {
         static void Main(string[] args)
         {
-            //CreateXmlFile("D:\\TestExportFile\\TestXml.xml");
+            //LoadXmlFile("D:\\TestExportFile\\TestXml.xml");
             LoadXmlString();
             Console.ReadLine();
         }
 
         private static void LoadXmlFile(string filePath)
         {
-
+            using (var xmlOperator = new XmlOperator(filePath))
+            {
+                //Console.WriteLine(xmlOperator.GetNodeAttributeValue("Books","Category"));
+                //Console.WriteLine(xmlOperator.GetXmlNodeValue("detail"));
+                var node=xmlOperator.GetXmlNode(x => x.Name == "Books");
+                Console.WriteLine(node.OuterXml);
+            }
         }
 
         private static void LoadXmlString()
@@ -36,9 +42,10 @@ namespace XMLHelper
             errorMessageFormatter.AppendLine("</soap:Envelope>");
             using (var xmlOperator = new XmlOperator())
             {
-                xmlOperator.Load(errorMessageFormatter.ToString());
-                Console.WriteLine(xmlOperator.GetXmlNodeValue("faultstring"));
-                Console.WriteLine(xmlOperator.GetXmlNodeValue("detail"));
+                xmlOperator.LoadFromString(errorMessageFormatter.ToString());
+                var node = xmlOperator.GetXmlNode(x => x.Name == "faultcode");
+                Console.WriteLine(xmlOperator.GetXmlNode(x=>x.Name=="faultstring")?.FirstChild.Value);
+                Console.WriteLine(xmlOperator.GetXmlNode(x=>x.Name=="detail")?.FirstChild.Value);
             }
         }
 
