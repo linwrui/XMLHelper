@@ -15,6 +15,13 @@ namespace XMLHelper.xml
 
         public XmlDocument XmlDoc => _xmlDoc;
 
+        public XmlNode RootNode => _root;
+
+        public string DefaultNamespaceURI => RootNode.NamespaceURI;
+
+        public string DefaultPrefix => RootNode.Prefix;
+
+        #region 初始化
         /// <summary>
         /// 从xml文档加载
         /// </summary>
@@ -75,6 +82,19 @@ namespace XMLHelper.xml
             _xmlDoc.Load(filePath);
             _root = _xmlDoc.DocumentElement;
             _fileInfo = new FileInfo(filePath);
+        }
+        #endregion
+
+        public XmlNode CreateNode(string name, bool useDefaultNamespace=false)
+        {
+            XmlNode node = _xmlDoc.CreateElement(useDefaultNamespace?DefaultPrefix:null, name, useDefaultNamespace ? DefaultNamespaceURI : "");
+            return node;
+        }
+
+        public XmlNode CreateNode(string name, string prefix , string namespaceURI = "", XmlNodeType nodeType = XmlNodeType.Element)
+        {
+            XmlNode node = _xmlDoc.CreateNode(nodeType, prefix, name, namespaceURI);
+            return node;
         }
 
         /// <summary>
@@ -161,7 +181,7 @@ namespace XMLHelper.xml
                 Directory.CreateDirectory(_fileInfo.Directory.FullName);
             }
             this.Save();
-            if(openFileAfterSaved)
+            if (openFileAfterSaved)
             {
                 System.Diagnostics.Process.Start(filePath);
             }
@@ -205,6 +225,11 @@ namespace XMLHelper.xml
                 }
             }
             return null;
+        }
+
+        public override string ToString()
+        {
+            return XmlDoc.OuterXml;
         }
 
     }

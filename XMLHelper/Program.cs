@@ -11,9 +11,10 @@ namespace XMLHelper
     {
         static void Main(string[] args)
         {
-            CreateXmlFile("D:\\TestExportFile\\TestXml.xml");
+            //CreateXmlFile("D:\\TestExportFile\\TestXml.xml");
             //LoadXmlFile("D:\\TestExportFile\\TestXml.xml");
-            //LoadXmlString();
+           // LoadXmlString();
+            TestCreateXmlString();
             Console.ReadLine();
         }
 
@@ -25,6 +26,23 @@ namespace XMLHelper
                 //Console.WriteLine(xmlOperator.GetXmlNodeValue("detail"));
                 var node=xmlOperator.GetXmlNode(x => x.Name == "Books");
                 Console.WriteLine(node.OuterXml);
+            }
+        }
+
+        private static void TestCreateXmlString()
+        {
+            using (var xmloper = new XmlOperator())
+            {
+                xmloper.CreateRootElement("Envelope", "soap", "http://schemas.xmlsoap.org/soap/envelope/");
+                var bodyNode= xmloper.RootNode.AppendChild(xmloper.CreateNode("Body", true));
+                var faultNode = bodyNode.AppendChild(xmloper.CreateNode("Fault", true));
+                var faultCodeNode = faultNode.AppendChild(xmloper.CreateNode("faultcode"));
+                var faultStringNode = faultNode.AppendChild(xmloper.CreateNode("faultstring"));
+                var detailNode = faultNode.AppendChild(xmloper.CreateNode("detail"));
+                faultCodeNode.AppendChild(xmloper.XmlDoc.CreateTextNode("soap:Client"));
+                faultStringNode.AppendChild(xmloper.XmlDoc.CreateTextNode("Error message."));
+                detailNode.AppendChild(xmloper.XmlDoc.CreateTextNode("Error details."));
+                xmloper.SaveAs("D:\\TestExportFile\\TestXml.xml", true);
             }
         }
 
